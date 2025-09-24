@@ -1,5 +1,5 @@
-function App() {
-  return <>Pets Adoption</>;
-}
+import SiteLayout from './layout/SiteLayout';
 
-export default App;
+export default function App() {
+  return <SiteLayout />;
+}
