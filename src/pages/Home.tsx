@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { Feature } from '../components/home/Feature';
 import { Badge } from '../components/home/Badge';
+import AdoptedPetImage from '../components/home/AdoptedPetImage';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -86,11 +87,9 @@ export default function Home() {
 
           <div className='relative'>
             <div className='aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200 shadow-sm'>
-              <img
-                src='https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1600&auto=format&fit=crop'
-                alt='Happy adopted pets'
-                className='h-full w-full object-cover'
-                loading='lazy'
+              <AdoptedPetImage
+                query='happy adopted pets'
+                imgClassName='h-full w-full object-cover'
               />
             </div>
 
