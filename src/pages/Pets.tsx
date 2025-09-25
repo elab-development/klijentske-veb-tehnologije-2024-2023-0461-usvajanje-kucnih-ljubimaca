@@ -1,16 +1,22 @@
+import { PETS } from '../data/pets';
+import PetCard from '../components/pets/PetCard';
+
 export default function Pets() {
   return (
-    <section className='space-y-4'>
-      <h1 className='text-2xl font-semibold'>Pets</h1>
-      <div className='grid gap-4'>
-        <input
-          type='text'
-          placeholder='Search pets...'
-          className='w-full max-w-md rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500'
-        />
-        <div className='rounded-xl border border-dashed border-slate-300 p-6 text-slate-500'>
-          In-memory pets list will appear here…
+    <section className='space-y-6'>
+      <header className='flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-end'>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>Pets</h1>
+          <p className='text-slate-600'>
+            Browse all pets currently in our demo database.
+          </p>
         </div>
+      </header>
+
+      <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+        {PETS.map((pet) => (
+          <PetCard key={pet.id} pet={pet} />
+        ))}
       </div>
     </section>
   );
