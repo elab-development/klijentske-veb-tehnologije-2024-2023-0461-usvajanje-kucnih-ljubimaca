@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 
@@ -19,20 +19,39 @@ export default function Pets() {
   const initialQ = searchParams.get('q') ?? '';
   const initialCategory =
     (searchParams.get('category') as Category | 'all') ?? 'all';
+  const initialPage = Math.max(
+    1,
+    parseInt(searchParams.get('page') || '1', 10) || 1
+  );
 
   const [query, setQuery] = useState(initialQ);
   const [category, setCategory] = useState<Category | 'all'>(initialCategory);
+  const [page, setPage] = useState<number>(initialPage);
+
+  const filtered = useMemo(() => {
+    return PETS.filter((p) =>
+      category === 'all' ? true : p.category === category
+    ).filter((p) => p.matchesQuery(query));
+  }, [category, query]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / 9));
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [totalPages, page]);
+  useEffect(() => {
+    setPage(1);
+  }, [query, category]);
 
   useEffect(() => {
     const next = new URLSearchParams();
     if (query) next.set('q', query);
     if (category !== 'all') next.set('category', category);
+    if (page > 1) next.set('page', String(page));
     setSearchParams(next, { replace: true });
-  }, [query, category, setSearchParams]);
+  }, [query, category, page, setSearchParams]);
 
-  const filtered = PETS.filter((p) =>
-    category === 'all' ? true : p.category === category
-  ).filter((p) => p.matchesQuery(query));
+  const start = (page - 1) * 9;
+  const current = filtered.slice(start, start + 9);
 
   return (
     <section className='space-y-6'>
@@ -89,12 +108,94 @@ export default function Pets() {
           No pets match your search. Try a different keyword or category.
         </div>
       ) : (
-        <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
-          {filtered.map((pet) => (
-            <PetCard key={pet.id} pet={pet} />
-          ))}
-        </div>
+        <>
+          <div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+            {current.map((pet) => (
+              <PetCard key={pet.id} pet={pet} />
+            ))}
+          </div>
+
+          <div className='flex items-center justify-center gap-1'>
+            <button
+              type='button'
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className='rounded-lg px-3 py-2 text-sm font-medium text-slate-700 disabled:opacity-50 hover:bg-slate-100 border border-slate-200 bg-white'
+            >
+              Prev
+            </button>
+
+            {getPageNumbers(page, totalPages).map((p, i) =>
+              p === '…' ? (
+                <span
+                  key={`dots-${i}`}
+                  className='px-2 text-slate-500 select-none'
+                >
+                  …
+                </span>
+              ) : (
+                <button
+                  type='button'
+                  key={p}
+                  onClick={() => setPage(p as number)}
+                  className={
+                    page === p
+                      ? 'rounded-lg px-3 py-2 text-sm font-semibold text-white bg-emerald-600'
+                      : 'rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 border border-slate-200 bg-white'
+                  }
+                >
+                  {p}
+                </button>
+              )
+            )}
+
+            <button
+              type='button'
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className='rounded-lg px-3 py-2 text-sm font-medium text-slate-700 disabled:opacity-50 hover:bg-slate-100 border border-slate-200 bg-white'
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </section>
   );
+}
+
+function getPageNumbers(
+  current: number,
+  total: number,
+  max = 7
+): Array<number | '…'> {
+  if (total <= max) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages = new Set<number>();
+  pages.add(1);
+  pages.add(total);
+
+  pages.add(current);
+  if (current - 1 > 1) pages.add(current - 1);
+  if (current + 1 < total) pages.add(current + 1);
+
+  let left = current - 2;
+  let right = current + 2;
+  while (pages.size < Math.min(total, max - 0) && (left > 1 || right < total)) {
+    if (left > 1) pages.add(left--);
+    if (pages.size >= max) break;
+    if (right < total) pages.add(right++);
+  }
+
+  const sorted = Array.from(pages).sort((a, b) => a - b);
+  const out: Array<number | '…'> = [];
+  for (let i = 0; i < sorted.length; i++) {
+    out.push(sorted[i]);
+    if (i < sorted.length - 1 && sorted[i + 1] !== sorted[i] + 1) {
+      out.push('…');
+    }
+  }
+  return out;
 }
