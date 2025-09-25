@@ -1,6 +1,12 @@
 import type { IPet } from '../../domain/pets';
 
-export function StatusBadge({ status }: { status: IPet['status'] }) {
+export function StatusBadge({
+  status,
+  isAbs = true,
+}: {
+  status: IPet['status'];
+  isAbs: boolean;
+}) {
   const styles =
     status === 'available'
       ? 'bg-emerald-600'
@@ -17,7 +23,9 @@ export function StatusBadge({ status }: { status: IPet['status'] }) {
 
   return (
     <span
-      className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium text-white ${styles}`}
+      className={`${
+        isAbs ? 'absolute left-3 top-3' : ''
+      } rounded-full px-2.5 py-1 text-xs font-medium text-white ${styles}`}
     >
       {label}
     </span>

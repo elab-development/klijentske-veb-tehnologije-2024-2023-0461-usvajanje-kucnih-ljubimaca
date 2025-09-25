@@ -1,7 +1,7 @@
 import { Inquiry } from '../models/Inquiry';
 import type { InquiryJSON, NewInquiry } from '../domain/inquiry';
 
-const STORAGE_KEY = 'pf_inquiries_v1';
+const STORAGE_KEY = 'paws&friends_inquiries';
 
 function readRaw(): InquiryJSON[] {
   try {
@@ -17,8 +17,9 @@ function readRaw(): InquiryJSON[] {
 function writeRaw(list: InquiryJSON[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch { //ignorisi 
-    }
+  } catch {
+    //
+  }
 }
 
 export function getAllInquiries(): Inquiry[] {

@@ -54,9 +54,9 @@ export default function PetDetails() {
         <div className='space-y-1'>
           <div className='flex items-center gap-2'>
             <h1 className='text-3xl font-bold tracking-tight'>{pet.name}</h1>
-            <StatusBadge status={pet.status} />
           </div>
           <div className='flex items-center gap-2'>
+            <StatusBadge status={pet.status} isAbs={false} />
             <CategoryBadge category={pet.category} />
             {pet.breed ? (
               <span className='rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-medium text-slate-700'>

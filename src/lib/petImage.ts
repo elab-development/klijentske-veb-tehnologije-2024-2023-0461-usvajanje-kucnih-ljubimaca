@@ -54,8 +54,6 @@ export async function fetchPexelsPhotoUrl(
     );
     if (!res.ok) return '';
 
-    console.log(res);
-
     const data = (await res.json()) as PexelsSearchResponse;
     const p = data.photos?.[0];
     return (
