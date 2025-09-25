@@ -1,11 +1,4 @@
-import type {
-  IPet,
-  ImageRef,
-  Category,
-  Size,
-  Sex,
-  AdoptionStatus,
-} from '../domain/pets';
+import type { IPet, Category, Size, Sex, AdoptionStatus } from '../domain/pets';
 
 export class Pet implements IPet {
   id!: string;
@@ -17,8 +10,6 @@ export class Pet implements IPet {
   sex!: Sex;
   size!: Size;
   weightKg?: number;
-  image!: ImageRef;
-  gallery: ImageRef[];
   location!: string;
   goodWith?: { children?: boolean; dogs?: boolean; cats?: boolean };
   vaccinated?: boolean;
@@ -29,29 +20,16 @@ export class Pet implements IPet {
   constructor(props: IPet) {
     if (!props.id) throw new Error('Pet requires an id');
     if (!props.name) throw new Error('Pet requires a name');
-    if (!props.image?.url) throw new Error('Pet requires a primary image url');
 
-    this.gallery = props.gallery ?? [];
-
-    Object.assign(this, { ...props, gallery: this.gallery });
-  }
-
-  primaryImage(): ImageRef {
-    return this.image ?? this.gallery[0];
+    Object.assign(this, props);
   }
 
   ageLabel(): string {
     return this.ageYears === 1 ? '1 year' : `${this.ageYears} years`;
   }
-
   isAvailable(): boolean {
     return this.status === 'available';
   }
-
-  addGalleryImage(img: ImageRef) {
-    this.gallery = [...this.gallery, img];
-  }
-
   matchesQuery(q: string): boolean {
     const needle = q.trim().toLowerCase();
     if (!needle) return true;

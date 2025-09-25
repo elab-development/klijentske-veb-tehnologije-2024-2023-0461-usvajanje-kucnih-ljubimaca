@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import type { IPet } from '../../domain/pets';
 import {
   MapPin,
   PawPrint,
@@ -9,7 +8,10 @@ import {
   Mars,
   Ruler,
 } from 'lucide-react';
+
+import type { IPet } from '../../domain/pets';
 import { CategoryBadge, StatusBadge } from './Badges';
+import PetPhoto from './PetPhoto';
 
 type Props = {
   pet: IPet;
@@ -19,11 +21,11 @@ export default function PetCard({ pet }: Props) {
   return (
     <article className='group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md'>
       <div className='relative aspect-[4/3] overflow-hidden'>
-        <img
-          src={pet.image.url}
-          alt={pet.image.alt ?? pet.name}
+        <PetPhoto
+          category={pet.category}
+          breed={pet.breed}
+          alt={pet.name}
           className='h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]'
-          loading='lazy'
         />
         <StatusBadge status={pet.status} />
       </div>

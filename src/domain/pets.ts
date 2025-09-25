@@ -6,11 +6,6 @@ export type Sex = 'male' | 'female';
 
 export type AdoptionStatus = 'available' | 'pending' | 'adopted';
 
-export type ImageRef = {
-  url: string;
-  alt?: string;
-};
-
 export interface IPet {
   id: string;
   name: string;
@@ -21,8 +16,6 @@ export interface IPet {
   sex: Sex;
   size: Size;
   weightKg?: number;
-  image: ImageRef;
-  gallery: ImageRef[];
   location: string;
   goodWith?: {
     children?: boolean;
