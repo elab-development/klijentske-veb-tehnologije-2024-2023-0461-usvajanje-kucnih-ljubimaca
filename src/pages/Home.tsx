@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PawPrint, Search, Heart, ShieldCheck, Sparkles } from 'lucide-react';
-import { useState } from 'react';
 
 import { Feature } from '../components/home/Feature';
 import { Badge } from '../components/home/Badge';
@@ -12,8 +12,8 @@ export default function Home() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // kasnije ćemo koristiti q za filter; za sada samo vodi na /pets
-    navigate('/pets');
+    const term = q.trim();
+    navigate(term ? `/pets?q=${encodeURIComponent(term)}` : '/pets');
   };
 
   return (

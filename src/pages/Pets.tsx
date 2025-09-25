@@ -1,6 +1,7 @@
-// src/pages/Pets.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
+
 import type { Category } from '../domain/pets';
 import { PETS } from '../data/pets';
 import PetCard from '../components/pets/PetCard';
@@ -14,8 +15,20 @@ const CATEGORY_OPTIONS: Array<{ label: string; value: Category | 'all' }> = [
 ];
 
 export default function Pets() {
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<Category | 'all'>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQ = searchParams.get('q') ?? '';
+  const initialCategory =
+    (searchParams.get('category') as Category | 'all') ?? 'all';
+
+  const [query, setQuery] = useState(initialQ);
+  const [category, setCategory] = useState<Category | 'all'>(initialCategory);
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (query) next.set('q', query);
+    if (category !== 'all') next.set('category', category);
+    setSearchParams(next, { replace: true });
+  }, [query, category, setSearchParams]);
 
   const filtered = PETS.filter((p) =>
     category === 'all' ? true : p.category === category
